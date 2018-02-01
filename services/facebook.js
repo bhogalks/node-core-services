@@ -13,16 +13,18 @@ module.exports = {getEvents};
  * @param appSecret
  */
 function getEvents(pageId, appId, appSecret) {
-    accessToken(appId, appSecret)
-        .then(function (value) {
-            return getFacebookEvents(pageId, value)
-        })
-        .then(function (events) {
-            console.log(events)
-        })
-        .catch(function (reason) {
-            console.log(reason)
-        });
+    return new Promise(function(resolve, reject) {
+        accessToken(appId, appSecret)
+            .then(function (value) {
+                return getFacebookEvents(pageId, value)
+            })
+            .then(function (events) {
+                resolve(events);
+            })
+            .catch(function (reason) {
+                reject(reason);
+            });
+    });
 }
 
 /**
