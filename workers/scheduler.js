@@ -8,9 +8,8 @@ module.exports = {startJobs};
 
 
 function startJobs() {
-    //startJob(timingSchedule, getPublicEventsForGuruNanakDarbarGravesend)
-
-   getPublicEventsForGuruNanakDarbarGravesend();
+    startJob(timingSchedule, getPublicEventsForGuruNanakDarbarGravesend)
+    getPublicEventsForGuruNanakDarbarGravesend();
 }
 
 function startJob(timing, fx) {

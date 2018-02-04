@@ -8,6 +8,7 @@ var swaggerUi       = require('swagger-ui-express');
 var path            = require('path');
 var scheduler       = require('./workers/scheduler');
 var hukamnama       = require('./routes/hukamnama.js');
+var events          = require('./routes/events.js');
 var swaggerJSDoc    = require('swagger-jsdoc');
 
 var app = express();
@@ -23,7 +24,7 @@ var swaggerSpec = swaggerJSDoc({
             version: '1.0.0',
         },
     },
-    apis: ['../routes/hukamnama.js'],
+    apis: ['../routes/*.js'],
     option:{},
     basePath:'/',
     host: 'localhost:3000'
@@ -38,6 +39,7 @@ app.get('/swagger.json', function(req, res) {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/hukamnama', hukamnama);
+app.use('/events', events);
 
 scheduler.startJobs();
 
