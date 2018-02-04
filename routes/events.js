@@ -43,7 +43,7 @@ MongoClient.connect(url, function (err, database) {
  *          type: array
  *          items:
  *              type: object
- *
+ */
 /**
  * @swagger
  * /events/all:
