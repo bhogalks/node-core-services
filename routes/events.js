@@ -6,6 +6,7 @@ var mongoDebug = require('node-mongodb-debug-log');
 mongoDebug.install(mongo);
 
 var sha1 = require('sha1');
+var moment = require('moment');
 
 var MongoClient = require('mongodb').MongoClient;
 
@@ -16,10 +17,26 @@ var EVENTS = 'events';
 
 var db;
 
+const FORMAT_DDMMYYYY = 'DDMMYYYY';
+const FORMAT_YYYY_MM_DD = 'YYYY-MM-DD';
+
 MongoClient.connect(url, function (err, database) {
     if (err) return console.log(err);
     db = database.db(dbName);
 });
+
+var options = {
+    projection: {
+        _id: 0,
+        description: 1,
+        start_time: 1,
+        end_time: 1,
+        name: 1,
+        id: 1,
+        place: 1,
+        event_times: 1
+    }
+};
 
 /**
  * @swagger
@@ -59,23 +76,56 @@ MongoClient.connect(url, function (err, database) {
  */
 router.get('/all', function (req, res, next) {
     return new Promise(function (resolve, reject) {
-        db.collection(EVENTS).find({}, {
-            projection: {
-                _id: 0,
-                description: 1,
-                start_time: 1,
-                end_time: 1,
-                name: 1,
-                id: 1,
-                place:1,
-                event_times : 1
-            }
-        }).toArray().then(function (value) {
+        db.collection(EVENTS).find({}, options).toArray().then(function (value) {
             console.log(value);
             res.json(value)
         })
     });
 });
+/**
+ * @swagger
+ * /events/{from}/{to}:
+ *  get:
+ *      description: Returns the events within the range from the facebook page
+ *      parameters:
+ *          - name: from
+ *            description: from date (DDMMYYYY)
+ *            in: path
+ *            required: true
+ *            type: string
+ *            format: DDMMYYYY
+ *          - name: to
+ *            description: to date (DDMMYYYY)
+ *            in: path
+ *            required: true
+ *            type: string
+ *            format: DDMMYYYY
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          '200':
+ *              description: All the events from Facebook
+ *              schema:
+ *                  $ref: '#/definitions/FBEvent'
+ */
 
+router.get('/:from/:to', function (req, res, next) {
+    var from = req.params.from;
+    var to = req.params.to;
+
+    //TODO validation
+    var fromDate = moment(from, FORMAT_DDMMYYYY);
+    var toDate   = moment(to, FORMAT_DDMMYYYY);
+
+    var fromAsString = fromDate.format(FORMAT_YYYY_MM_DD);
+    var toAsString = toDate.format(FORMAT_YYYY_MM_DD);
+
+    return new Promise(function (resolve, reject) {
+        db.collection(EVENTS).find({start_time: {$gte: fromAsString, $lte : toAsString}}, options).toArray().then(function (value) {
+            console.log(value);
+            res.json(value)
+        })
+    });
+});
 
 module.exports = router;
