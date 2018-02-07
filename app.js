@@ -27,7 +27,7 @@ var swaggerSpec = swaggerJSDoc({
     apis: ['../routes/*.js'],
     option:{},
     basePath:'/',
-    host: 'localhost:3000'
+    host: process.env.HOST_NAME
 });
 
 
