@@ -1,1 +1,1 @@
-web: npm start
+core-ws: npm start
