@@ -77,7 +77,7 @@ var options = {
 router.get('/all', function (req, res, next) {
     return new Promise(function (resolve, reject) {
         db.collection(EVENTS).find({}, options).toArray().then(function (value) {
-            console.log(value);
+            console.log('returing' , value.length, 'events');
             res.json(value)
         })
     });
@@ -122,7 +122,7 @@ router.get('/:from/:to', function (req, res, next) {
 
     return new Promise(function (resolve, reject) {
         db.collection(EVENTS).find({start_time: {$gte: fromAsString, $lte : toAsString}}, options).toArray().then(function (value) {
-            console.log(value);
+            console.log('returing' , value.length, 'events');
             res.json(value)
         })
     });
