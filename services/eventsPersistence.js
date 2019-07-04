@@ -89,7 +89,7 @@ function insertEvents(events) {
 
         }
         //TODO Refactor
-        db.collection(EVENTS).remove({});
+        db.collection(EVENTS).removeMany();
         db.collection(EVENTS).insertMany(normalizedEvents)
             .then(function (result) {
                 console.log('Inserted', result.insertedCount, 'records')
@@ -104,7 +104,7 @@ function insertEvents(events) {
 function updateHashInDb(hashChanged, newHash) {
     if (hashChanged) {
         //TODO Refactor
-        db.collection(EVENTS_METADATA).remove({});
+        db.collection(EVENTS_METADATA).removeMany();
         db.collection(EVENTS_METADATA).insertOne({'value': newHash})
             .then(function (value) {
                 console.log('Updated hash in the events metadata.')

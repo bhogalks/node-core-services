@@ -13,18 +13,32 @@ module.exports = {getEvents};
  * @param appSecret
  */
 function getEvents(pageId, appId, appSecret) {
-    return new Promise(function(resolve, reject) {
-        accessToken(appId, appSecret)
-            .then(function (value) {
-                return getFacebookEvents(pageId, value)
-            })
-            .then(function (events) {
-                resolve(events);
-            })
-            .catch(function (reason) {
-                reject(reason);
-            });
-    });
+    var longTermAccessTokenAvailable = process.env.FB_LONG_TERM_ACCESS_TOKEN;
+
+    if (longTermAccessTokenAvailable != undefined) {
+        return new Promise(function (resolve, reject) {
+            getFacebookEvents(pageId, longTermAccessTokenAvailable)
+                .then(function (events) {
+                    resolve(events);
+                })
+                .catch(function (reason) {
+                    reject(reason);
+                });
+        });
+    } else {
+        return new Promise(function (resolve, reject) {
+            accessToken(appId, appSecret)
+                .then(function (value) {
+                    return getFacebookEvents(pageId, value)
+                })
+                .then(function (events) {
+                    resolve(events);
+                })
+                .catch(function (reason) {
+                    reject(reason);
+                });
+        });
+    }
 }
 
 /**
