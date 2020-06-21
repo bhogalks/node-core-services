@@ -1,0 +1,35 @@
+<html>
+<body style="display: flow-root; width: 100vw;">
+<script type="text/javascript">
+    var apiUrl = 'hukamnama/today';
+    fetch(apiUrl).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        var mainContainer = document.getElementById("hukamnama");
+
+        for (var i = 0; i < data[0].pbi.length; i++) {
+            var div = document.createElement("div");
+
+            div.innerHTML = data[0].pbi[i]
+            mainContainer.appendChild(div);
+        }
+        return data[0].eng
+    }).then(function (data) {
+        var engContainer = document.createElement("hukamnamaEng");
+        engContainer.setAttribute("style", "font-size:3vw")
+
+        for (var i = 0; i < data.length; i++) {
+            var div = document.createElement("div");
+            div.innerHTML = data[i]
+            engContainer.appendChild(div);
+        }
+
+        var mainContainer = document.getElementById("hukamnama");
+        mainContainer.append(engContainer)
+    }).catch(function (reason) {
+        console.log(reason)
+    });
+</script>
+<div id="hukamnama" align="middle" style="font-size: 6vw"/>
+</body>
+</html>
