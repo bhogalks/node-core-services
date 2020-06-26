@@ -1,11 +1,19 @@
 <html>
 <body style="display: flow-root; width: 100vw;">
 <script type="text/javascript">
-    var apiUrl = 'hukamnama/today';
+    var apiUrl = 'hukamnama/today-v2';
     fetch(apiUrl).then(function (response) {
         return response.json();
     }).then(function (data) {
+        console.log(data)
+
+        var dateDiv = document.createElement("div");
+        dateDiv.setAttribute("style", "font-size:3vw")
+        dateDiv.innerText = data[0].date.eng + ' (' + data[0].date.pbi +')';
+
+
         var mainContainer = document.getElementById("hukamnama");
+        mainContainer.append(dateDiv);
 
         for (var i = 0; i < data[0].pbi.length; i++) {
             var div = document.createElement("div");

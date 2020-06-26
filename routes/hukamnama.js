@@ -54,6 +54,44 @@ router.get('/today', function (req, res, next) {
 
 /**
  * @swagger
+ * /hukamnama/today-v2:
+ *    get:
+ *     description: Returns today's hukamnama
+ *     produces:
+ *       - application/json
+ *     responses:
+ *          200:
+ *              description: Hukamnama for the given date
+ *              schema:
+ *                  $ref: '#/definitions/Hukamnama'
+ *
+ */
+router.get('/today-v2', function (req, res, next) {
+    client.get("https://api.gurbaninow.com/v2/hukamnama/today", function (data, response) {
+
+        var pbiText = new Array(), engText = new Array();
+
+        for (var index in data.hukamnama) {
+            var line = data.hukamnama[index].line;
+            pbiText.push(line.gurmukhi.unicode);
+            engText.push(line.translation.english.default);
+        }
+
+        var engDate = data.date.gregorian;
+        var nanakshahi = data.date.nanakshahi.punjabi;
+
+        var dateInfo = {"eng" : ''.concat(engDate.month,' ', engDate.date, ' ',engDate.year)
+                        ,"pbi" :  ''.concat(nanakshahi.date, ' ', nanakshahi.month, ' ', nanakshahi.year)};
+
+        var responseData = [{"date": dateInfo, "eng": engText, "pbi": pbiText}];
+
+        console.log(responseData)
+        res.json(responseData);
+    });
+});
+
+/**
+ * @swagger
  * /hukamnama/archived/{yyyy}/{mm}/{dd}:
  *   get:
  *     description: Returns users
