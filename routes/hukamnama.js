@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Client = require('node-rest-client').Client;
-
-var client = new Client();
+const axios = require('axios');
 
 /**
  * @swagger
@@ -35,9 +33,9 @@ var client = new Client();
  *
  */
 router.get('/today', function (req, res, next) {
-    client.get("https://api.gurbaninow.com/v2/hukamnama/today", function (data, response) {
-
-        var pbiText = new Array(), engText = new Array();
+    axios.get("https://api.gurbaninow.com/v2/hukamnama/today").then( payload => {
+        var data = payload.data;
+        const pbiText = [], engText = [];
 
         for (var index in data.hukamnama) {
             var line = data.hukamnama[index].line;
@@ -47,7 +45,6 @@ router.get('/today', function (req, res, next) {
 
         var responseData = [{"eng": engText, "pbi": pbiText}];
 
-        console.log(responseData)
         res.json(responseData);
     });
 });
@@ -67,9 +64,10 @@ router.get('/today', function (req, res, next) {
  *
  */
 router.get('/today-v2', function (req, res, next) {
-    client.get("https://api.gurbaninow.com/v2/hukamnama/today", function (data, response) {
+    axios.get("https://api.gurbaninow.com/v2/hukamnama/today").then(payload => {
 
-        var pbiText = new Array(), engText = new Array();
+        var data = payload.data;
+        var pbiText = [], engText = [];
 
         for (var index in data.hukamnama) {
             var line = data.hukamnama[index].line;
@@ -85,7 +83,6 @@ router.get('/today-v2', function (req, res, next) {
 
         var responseData = [{"date": dateInfo, "eng": engText, "pbi": pbiText}];
 
-        console.log(responseData)
         res.json(responseData);
     });
 });
@@ -126,9 +123,9 @@ router.get('/archived/:yyyy/:mm/:dd', function (req, res, next) {
 
     var url = `https://api.gurbaninow.com/v2/hukamnama/${year}/${month}/${day}`;
 
-    client.get(url, function (data, response) {
-
-        var pbiText = new Array(), engText = new Array();
+    axios.get(url).then(payload => {
+        var data = payload.data;
+        var pbiText = [], engText = [];
 
         for (var index in data.hukamnama) {
             var line = data.hukamnama[index].line;
@@ -138,7 +135,6 @@ router.get('/archived/:yyyy/:mm/:dd', function (req, res, next) {
 
         var responseData = [{"eng": engText, "pbi": pbiText}];
 
-        console.log(responseData)
         res.json(responseData);
     });
 });

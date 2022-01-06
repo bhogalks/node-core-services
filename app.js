@@ -6,9 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 var express         = require('express');
 var swaggerUi       = require('swagger-ui-express');
 var path            = require('path');
-var scheduler       = require('./workers/scheduler');
 var hukamnama       = require('./routes/hukamnama.js');
-var events          = require('./routes/events.js');
 var swaggerJSDoc    = require('swagger-jsdoc');
 
 var app = express();
@@ -39,9 +37,7 @@ app.get('/swagger.json', function(req, res) {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/hukamnama', hukamnama);
-app.use('/events', events);
 
-scheduler.startJobs();
 
 //TODO configure error handlers
 
