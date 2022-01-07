@@ -1,9 +1,26 @@
 <html>
 <body style="display: flow-root; width: 100vw;">
 <script type="text/javascript">
-    var apiUrl = 'hukamnama/today-v2';
+    var apiUrl = 'https://api.gurbaninow.com/v2/hukamnama/today';
     fetch(apiUrl).then(function (response) {
         return response.json();
+    }).then(function(data) {
+        var pbiText = [], engText = [];
+
+        for (var index in data.hukamnama) {
+            var line = data.hukamnama[index].line;
+            pbiText.push(line.gurmukhi.unicode);
+            engText.push(line.translation.english.default);
+        }
+
+        var engDate = data.date.gregorian;
+        var nanakshahi = data.date.nanakshahi.punjabi;
+
+        var dateInfo = {"eng" : ''.concat(engDate.month,' ', engDate.date, ' ',engDate.year)
+            ,"pbi" :  ''.concat(nanakshahi.date, ' ', nanakshahi.month, ' ', nanakshahi.year)};
+
+        var responseData = [{"date": dateInfo, "eng": engText, "pbi": pbiText}];
+        return responseData;
     }).then(function (data) {
         console.log(data)
 
